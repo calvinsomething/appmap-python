@@ -1,27 +1,32 @@
-os:
-- linux
-- windows
+os: linux
 language: python
 python:
 - "3.9"
 
-before_install:
-- if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install python; fi
 
 stages:
-- lint
-- test
-- deploy
-cache:
-  pip: true
+- windows
+#- lint
+#- test
+#- deploy
+#cache:
+#  pip: true
   
-install:
-- pip install --upgrade pip
-- pip install poetry
-- poetry install
+#install:
+#- pip install --upgrade pip
+#- pip install poetry
+#- poetry install
 
 jobs:
   include:
+  - stage: windows
+    os: windows
+    language: generic
+#    before_install:
+#    - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install python; fi
+#    script:
+#    - poetry run pytest
+    
   - stage: lint
     script:
     - poetry run pylint appmap
