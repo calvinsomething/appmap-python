@@ -7,6 +7,7 @@ from functools import wraps
 
 from . import env
 from . import utils
+from .utils import appmap_tls
 
 logger = logging.getLogger(__name__)
 
@@ -164,6 +165,10 @@ class Recorder:
         """
         Add an event to the current recording
         """
+        if (event.event == 'call' and getattr(event, 'defined_class', None)):
+            package = event.defined_class.rpartition('.')[0]
+            appmap_tls()['last_package'] = package
+
         self._events.append(event)
 
     def events(self):

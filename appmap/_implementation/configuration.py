@@ -93,7 +93,11 @@ def wrap(fn, isstatic):
     # Going forward, we should consider how to make this more general.
     @wraps(fn, assigned = WRAPPER_ASSIGNMENTS + tuple(['cache_clear']))
     def wrapped_fn(*args, **kwargs):
-        if not Recorder().enabled or is_instrumentation_disabled():
+        last_package = appmap_tls().setdefault('last_package', '')
+        logging.warning("last_package '%s'", last_package)
+        if (not Recorder().enabled
+            or is_instrumentation_disabled()
+            or last_package.startswith('django.')):
             return fn(*args, **kwargs)
 
         with recording_disabled():
